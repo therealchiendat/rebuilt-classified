@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/rebuilt-classified/static/css/main.349d089d.css",
+    "main.js": "/rebuilt-classified/static/js/main.d170e9a9.js",
+    "static/js/787.2064ce87.chunk.js": "/rebuilt-classified/static/js/787.2064ce87.chunk.js",
+    "static/media/logo.png": "/rebuilt-classified/static/media/logo.59c15723a299ad597a35.png",
+    "index.html": "/rebuilt-classified/index.html",
+    "main.349d089d.css.map": "/rebuilt-classified/static/css/main.349d089d.css.map",
+    "main.d170e9a9.js.map": "/rebuilt-classified/static/js/main.d170e9a9.js.map",
+    "787.2064ce87.chunk.js.map": "/rebuilt-classified/static/js/787.2064ce87.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.349d089d.css",
+    "static/js/main.d170e9a9.js"
+  ]
+}
