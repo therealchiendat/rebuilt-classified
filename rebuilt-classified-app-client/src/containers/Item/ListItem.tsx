@@ -12,8 +12,6 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
     const [priceFilter, setPriceFilter] = useState("");
     const [isListLoading, setIsListLoading] = useState(false);
     const [specFilters, setSpecFilters] = useState<Record<string, Array<string>>>({});
-    const [filteredItemCount, setFilteredItemCount] = useState(0);
-
 
     useEffect(()=> {
         setIsListLoading(true);

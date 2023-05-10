@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../libs/contextLib";
 import { useFormFields } from "../../libs/hooksLib";
@@ -6,13 +6,6 @@ import { onError } from "../../libs/errorLib";
 import "./Signup.css";
 import { Auth } from "aws-amplify";
 
-interface FormFields {
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    confirmationCode: string;
-}
 
 export default function Signup() {
     const [fields, handleFieldChange] = useFormFields({

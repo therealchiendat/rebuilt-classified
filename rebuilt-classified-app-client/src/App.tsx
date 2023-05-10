@@ -10,7 +10,6 @@ function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [isTransparent, setIsTransparent] = useState<boolean>(true);
-  const [storeData, setStoreData] = useState<any>();
 
   useEffect(() => {
     onLoad();
@@ -42,7 +41,7 @@ function App() {
     !isAuthenticating &&
     <div className="App">
       <div className="container">
-        <AppContext.Provider value={{ storeData, isAuthenticated, userHasAuthenticated }}>
+        <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
           <Navbar transparent={isTransparent} position="fixed-top" />
           <Router/>
         </AppContext.Provider>
