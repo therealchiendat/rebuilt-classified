@@ -1,0 +1,50 @@
+.spec-filter {
+    margin-bottom: 1rem;
+}
+
+.spec-filter .toggle {
+    margin: 5px 0;
+    background: #f2f2f2;
+    color: black;
+    padding: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.spec-filter .filter-table {
+    margin-top: 0.5rem;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background-color: #fff;
+    width: 100%;
+}
+
+.spec-filter .filter-table th {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.spec-filter .filter-table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+}
+
+.spec-filter .filter-key {
+    font-weight: bold;
+}
+.spec-filter .filter-values {
+}
+
+.spec-filter .filter-values label {
+    /*display: inline-flex;*/
+    /*align-items: center;*/
+    display: flex;
+    justify-content: flex-start;
+    margin-right: 1rem;
+}
+
+.spec-filter .filter-values input[type="checkbox"] {
+    margin-right: 0.5rem;
+}

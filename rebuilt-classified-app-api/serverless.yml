@@ -1,0 +1,97 @@
+service: rebuild-classified-app-api
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+    - serverless-webpack
+    - serverless-offline
+
+    # serverless-webpack configuration
+    # Enable auto-packing of external modules
+custom:
+    webpack:
+        webpackConfig: ./webpack.config.js
+        includeModules: true
+provider:
+    name: aws
+    runtime: nodejs16.x
+    stage: prod
+    region: us-east-1
+
+    #'iamRoleStatements' defines the permission policy for the Lambda function.
+    #In this case Lambda functions are granted with permissions to access DynamoDB.
+
+    iam:
+      role:
+        statements:
+          - Effect: Allow
+            Action:
+                - dynamodb:DescribeTable
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+            Resource: "arn:aws:dynamodb:us-east-1:*:*"
+
+functions:
+         # Defines an HTTP API endpoint that calls the main function in create.ts
+         # - path: url path is /rebuiltClassified
+         # - method: POST request
+         # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
+         # domain api call
+         # - authorizer: authenticate using the AWS IAM role
+         create:
+            handler: create.main
+            events:
+              - http:
+                    path: item
+                    method: post
+                    cors: true
+                    authorizer: aws_iam
+
+         get:
+            # Defines an HTTP API endpoint that calls the main function in get.ts
+            # - path: url path is /rebuiltClassified/{id}
+            # - method: GET request
+            handler: get.main
+            events:
+              - http:
+                    path: item/{id}
+                    method: get
+
+         list:
+            # Defines an HTTP API endpoint that calls the main function in list.ts
+            # - path: url path is /rebuiltClassified
+            # - method: GET request
+            handler: list.main
+            events:
+              - http:
+                    path: item
+                    method: get
+
+         update:
+            # Defines an HTTP API endpoint that calls the main function in update.ts
+            # - path: url path is /rebuiltClassified/{id}
+            # - method: PUT request
+            handler: update.main
+            events:
+              - http:
+                    path: item/{id}
+                    method: put
+                    cors: true
+                    authorizer: aws_iam
+
+         delete:
+            # Defines an HTTP API endpoint that calls the main function in delete.ts
+            # - path: url path is /rebuiltClassified/{id}
+            # - method: DELETE request
+            handler: delete.main
+            events:
+              - http:
+                    path: item/{id}
+                    method: delete
+                    cors: true
+                    authorizer: aws_iam
+
+        # Create our resources with separate CloudFormation template

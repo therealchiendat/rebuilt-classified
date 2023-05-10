@@ -1,0 +1,130 @@
+.EditItem {
+    max-width: 600px;
+    margin: 100px auto auto auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 50px;
+}
+
+.EditItem form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.EditItem form > div {
+    margin-bottom: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.EditItem input,
+.EditItem textarea {
+    width: 87%;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    resize: vertical;
+    vertical-align: center;
+}
+
+.EditItem .form-group input[type="text"],
+.EditItem .form-group textarea {
+    width: 100%;
+}
+
+
+.EditItem textarea {
+    min-height: 200px;
+}
+
+.EditItem .specifications td {
+    vertical-align: top;
+}
+
+.EditItem .attachment-input {
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.EditItem .attachment-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.EditItem .attachment-label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    margin: 0 20px 0 0;
+}
+
+.EditItem .attachment-placeholder {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    border-radius: 0.25rem;
+    font-size: 2rem;
+    color: #ccc;
+}
+
+.EditItem button {
+    padding: 0.5rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.EditItem button:hover {
+    background-color: #0069d9;
+}
+
+.EditItem button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.EditItem .preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.EditItem .preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.EditItem .preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+}
+
+.EditItem .remove-attachment {
+    margin-top: 0.5rem;
+    padding: 0.25rem;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.EditItem .remove-attachment:hover {
+    background-color: #c82333;
+}

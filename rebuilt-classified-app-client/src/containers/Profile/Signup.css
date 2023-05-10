@@ -1,0 +1,15 @@
+.Signup {
+    padding: 60px 0;
+    display: flex;
+    flex-direction: column;
+}
+.Signup form {
+    margin: 0 auto;
+    width: 100%;
+    min-width: 250px;
+    max-width: 320px;
+}
+.Signup input {
+    border: 1px solid black;
+    border-radius: 5px;
+}

@@ -1,0 +1,72 @@
+.Item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    margin: 100px auto auto auto;
+}
+
+.Item .image-container {
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    max-width: 350px;
+    max-height: 350px;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    margin-bottom: 20px;
+}
+
+.Item h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.Item .description {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid black;
+    width: calc(100% - 20px);
+    line-height: 1.5;
+}
+
+.Item .price {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+
+
+.Item .table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.Item .table-container .table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.Item .table-container .table th,
+.Item .table-container .table td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+.Item button {
+    margin: 5px;
+}
+
+.Item .delete-button {
+    background-color: red;
+}

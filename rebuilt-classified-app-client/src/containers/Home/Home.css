@@ -1,0 +1,6 @@
+.Home {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background: #e7e5e5;
+}
