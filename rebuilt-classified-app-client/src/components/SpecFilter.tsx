@@ -12,9 +12,10 @@ interface SpecFilterProps {
 }
 
 export default function SpecFilter({ items, specFilters, setSpecFilters }: SpecFilterProps) {
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     // Collect available specification values for each key
-    const specValues: Record<string, Array<string>> = {};
+    let specValues: Record<string, Array<string>> = {};
+    const motorKeys: Record<string, Array<string>> = {};
     items.forEach((item) => {
         item.specifications?.forEach((spec) => {
             if (!(spec.key in specValues)) {
@@ -25,6 +26,17 @@ export default function SpecFilter({ items, specFilters, setSpecFilters }: SpecF
             }
         });
     });
+
+    // Separate motor keys from other keys
+    Object.entries(specValues).forEach(([key, values]) => {
+        if (key.toLowerCase().includes('motor')) {
+            motorKeys[key] = values;
+            delete specValues[key];
+        }
+    });
+
+    // Combine motor keys and other keys such that motor keys appear first
+    specValues = { ...motorKeys, ...specValues };
 
     // Handle filter selection
     function handleFilterSelect(key: string, value: string) {
@@ -44,39 +56,39 @@ export default function SpecFilter({ items, specFilters, setSpecFilters }: SpecF
 
     return (
         <div className="spec-filter">
-            <button className="toggle" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                Filter by Specifications
-            </button>
-            {isFilterOpen && (
-                <table className="filter-table">
-                    <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Values</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {Object.entries(specValues).map(([key, values]) => (
-                        <tr className="filter-row" key={key}>
-                            <td className="filter-key">{key}</td>
-                            <td className="filter-values">
-                                {values.map((value) => (
-                                    <label key={value}>
-                                        <input
-                                            type="checkbox"
-                                            value={value}
-                                            checked={specFilters[key]?.includes(value)}
-                                            onChange={() => handleFilterSelect(key, value)}
-                                        />
-                                        <div>{value}</div>
-                                    </label>
-                                ))}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            )}
+            {Object.entries(specValues).map(([key, values]) => (
+                <div
+                    className="dropdown"
+                    key={key}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                >
+                    <button
+                        className={"dropbtn" + ((activeDropdown === key) ? " focus" :  (specFilters[key]?.length > 0) ? " active" : "" )}
+                        onClick={() =>
+                            activeDropdown === key
+                                ? setActiveDropdown(null)
+                                : setActiveDropdown(key)
+                        }
+                    >
+                        {key}{specFilters[key]?.length > 0 ? ":" : ""} {specFilters[key]?.join(', ')}
+                    </button>
+                    {activeDropdown === key && (
+                        <div className="dropdown-content">
+                            {values.map((value) => (
+                                <label key={value}>
+                                    <input
+                                        type="checkbox"
+                                        value={value}
+                                        checked={specFilters[key]?.includes(value)}
+                                        onChange={() => handleFilterSelect(key, value)}
+                                    />
+                                    {value}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ))}
         </div>
     );
 }

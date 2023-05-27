@@ -8,8 +8,6 @@ import SpecFilter from "../../components/SpecFilter";
 export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
     const navigate: NavigateFunction = useNavigate();
     const [item, setItem] = useState([]);
-    const [typeFilter, setTypeFilter] = useState("");
-    const [priceFilter, setPriceFilter] = useState("");
     const [isListLoading, setIsListLoading] = useState(false);
     const [specFilters, setSpecFilters] = useState<Record<string, Array<string>>>({});
 
@@ -61,16 +59,7 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
     }
 
 
-    function renderItemList(items) {
-        const filteredItems = item.filter((item) => {
-            if (typeFilter && item.type !== typeFilter) return false;
-            if (priceFilter && Number(item.price) > Number(priceFilter)) return false;
-            for (const [key, values] of Object.entries(specFilters)) {
-                const itemValues = item.specifications?.filter((spec) => spec.key === key).map((spec) => spec.value);
-                if (values.length > 0 && !values.some((v) => itemValues.includes(v))) return false;
-            }
-            return true;
-        });
+    function renderItemList() {
         return (
             <div className="items">
                 <div className="header">
@@ -78,33 +67,9 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
                     {isAuthenticated && <button onClick={handleCreateNewItem}>Create New Item</button>}
                 </div>
                 {item && <SpecFilter items={item} specFilters={specFilters} setSpecFilters={setSpecFilters}/>}
-                <div className="filter">
-                    <div>
-                        <label htmlFor="type-filter">Filter by Type:</label>
-                        <select id="type-filter" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-                            <option value="">All</option>
-                            {item.map(({ type }, index) => (
-                                <option key={`type-option-filter-${type}-${index}`} value={type}>
-                                    {type}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="price-filter">Filter by Price:</label>
-                        <select id="price-filter" value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
-                            <option value="">All</option>
-                            {item.map(({ price }, index) => (
-                                <option key={`price-option-filter-${price}-${index}`} value={price}>
-                                    ${price} and under
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
                 <div className="content">
                     {!isListLoading &&
-                        filteredItems.map(({ itemId, images, price, title }, index: number) => {
+                        item.map(({ itemId, images, price, title }, index: number) => {
                             return (
                                 <div key={itemId} className="item" onClick={(e) => handleItemClick(e, itemId)}>
                                     <div className="image-container">
@@ -124,8 +89,8 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
 
     function renderItems() {
         return (
-            <div className="notes">
-                <div>{!isLoading && renderItemList(item)}</div>
+            <div className="items">
+                <div>{!isLoading && renderItemList()}</div>
             </div>
         );
     }
