@@ -1,6 +1,7 @@
 .spec-filter {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     margin-top: 0.5rem;
     width: 100%;
     margin-bottom: 1rem;
@@ -15,16 +16,14 @@
     cursor: pointer;
 }
 
-.spec-filter .filter-dropdowns {}
-
 .spec-filter .dropdown {
     position: relative;
     display: inline-block;
-    margin: 0 5px;
+    margin: 5px;
     border: 1px solid #0092d07a;
     border-radius: 6px;
     box-shadow: rgb(229, 236, 236);
-    min-width: 70px;
+    min-width: 90px;
     cursor: pointer;
 }
 
@@ -62,7 +61,6 @@
     position: absolute;
     right: 10px;
     top: 0;
-    z-index: 1;
     text-align: center;
     width: 10px;
     height: 100%;
