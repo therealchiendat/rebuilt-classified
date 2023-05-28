@@ -60,16 +60,23 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
 
 
     function renderItemList() {
+        const filteredItems = item.filter((item) => {
+            for (const [key, values] of Object.entries(specFilters)) {
+                const itemValues = item.specifications?.filter((spec) => spec.key === key).map((spec) => spec.value);
+                if (values.length > 0 && !values.some((v) => itemValues.includes(v))) return false;
+            }
+            return true;
+        });
         return (
             <div className="items">
                 <div className="header">
                     <h1>Classified Rebuilt Items</h1>
                     {isAuthenticated && <button onClick={handleCreateNewItem}>Create New Item</button>}
                 </div>
-                {item && <SpecFilter items={item} specFilters={specFilters} setSpecFilters={setSpecFilters}/>}
+                {item && <SpecFilter items={item} specFilters={specFilters} setSpecFilters={setSpecFilters} />}
                 <div className="content">
                     {!isListLoading &&
-                        item.map(({ itemId, images, price, title }, index: number) => {
+                        filteredItems.map(({ itemId, images, price, title }, index: number) => {
                             return (
                                 <div key={itemId} className="item" onClick={(e) => handleItemClick(e, itemId)}>
                                     <div className="image-container">
