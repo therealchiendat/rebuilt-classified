@@ -10,8 +10,36 @@
     margin: 100px auto auto auto;
 }
 
-.Item .image-container {
+.Item .item-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
     width: 100%;
+}
+
+@media screen and ( max-width: 600px ) { 
+    .item-container { 
+        flex-direction: column !important;
+        justify-content: center;
+    }
+  }
+
+.Item .content-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+}
+
+.Item .image-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
     border-radius: 5px;
     overflow: hidden;
     max-width: 350px;
@@ -25,10 +53,24 @@
 .Item h2 {
     font-size: 24px;
     font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.Item label {
+    font-size: 18px;
+    font-weight: bold;
     margin-bottom: 10px;
 }
 
+.Item .description-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
 .Item .description {
+    white-space: pre-wrap;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
@@ -49,6 +91,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-bottom: 20px;
     width: 100%;
 }
 
@@ -69,4 +112,11 @@
 
 .Item .delete-button {
     background-color: red;
+}
+
+.Item .attachment {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }

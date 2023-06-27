@@ -53,6 +53,13 @@
     flex-wrap: wrap;
 }
 
+.ListItem .content p {
+    max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .ListItem .item {
     display: flex;
     flex-direction: column;

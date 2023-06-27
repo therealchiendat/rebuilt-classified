@@ -1,5 +1,5 @@
 import "./Navbar.css";
-import {NavigateFunction, useNavigate} from 'react-router-dom';
+import {NavigateFunction, useLocation, useNavigate} from 'react-router-dom';
 import { CSSProperties } from "react";
 import {useAppContext} from "../libs/contextLib";
 import {Auth} from "aws-amplify";
@@ -7,6 +7,7 @@ import logo from "../assets/logo.png";
 
 export const Navbar = ({ transparent, position }: { transparent: boolean, position: string }) => {
     const navigate: NavigateFunction = useNavigate();
+    const location = useLocation();
     const { isAuthenticated, userHasAuthenticated } = useAppContext();
 
     function Style(): CSSProperties {
@@ -32,6 +33,10 @@ export const Navbar = ({ transparent, position }: { transparent: boolean, positi
         }
     }
 
+    function handleBackClick() {
+        navigate(-1);
+    }
+
     async function handleLogout() {
         await Auth.signOut();
         userHasAuthenticated(false);
@@ -41,9 +46,9 @@ export const Navbar = ({ transparent, position }: { transparent: boolean, positi
     return (
         <div className="nav-bar" style={Style()}>
             <div className="section menu-button float-left">
-                {/*<svg className="Icon pointer" role="presentation" viewBox="0 0 24 16">*/}
-                {/*    <path d="M0 15.985v-2h24v2H0zm0-9h24v2H0v-2zm0-7h24v2H0v-2z" fill="black"></path>*/}
-                {/*</svg>*/}
+            { location.pathname !== '/' && <svg onClick={() => handleBackClick()} className="back pointer" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+            </svg>}
             </div>
             <div className="section pointer" onClick={() => handleNavClick('')}>
                 <img className="logo" src={logo} height="50" width="50" alt="Nguyen Technologies & Electrical Equipment" />

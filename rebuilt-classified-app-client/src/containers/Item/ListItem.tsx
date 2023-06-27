@@ -16,12 +16,12 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
     }, []);
 
     useEffect(() => {
-        async function fetchAttachments() {
+        async function fetchPhotos() {
             const tempData = [...data];
 
             const promises = tempData.map(async (item) => {
-                const { attachment } = item;
-                item.images = await Promise.all(attachment.map((attachment) => Storage.get(attachment)));
+                const { photo } = item;
+                item.images = photo && await Promise.all(photo.map((a) => a && Storage.get(a)));
                 return item;
             });
 
@@ -29,7 +29,7 @@ export default function ListItem({data, isAuthenticated, isLoading,...rest}) {
             setItem(updatedData);
         }
         if (data && data.length > 0){
-            fetchAttachments();
+            fetchPhotos();
         }
     }, [data]);
 

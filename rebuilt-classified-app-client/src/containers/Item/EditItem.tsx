@@ -19,6 +19,8 @@ export default function EditItem() {
         type: "",
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [originalPhotos, setOriginalPhotos] = useState([]);
+    const [currentPhotos, setCurrentPhotos] = useState([]);
     const [originalAttachments, setOriginalAttachments] = useState([]);
     const [currentAttachments, setCurrentAttachments] = useState([]);
     const [previews, setPreviews] = useState([]);
@@ -32,20 +34,35 @@ export default function EditItem() {
         async function onLoad() {
             try {
                 const item = await fetchItem();
-                const { title, content, price, type, attachment, specifications } = item;
+                const { title, content, price, type, photo, attachment, specifications } = item;
                 let imageURLs = [];
-                let originalURLs = [];
-                if (attachment) {
+                let attachmentURLs = [];
+                let originalPhoto = [];
+                let originalAttachment = [];
+                if (photo) {
                     imageURLs = await Promise.all(
+                        photo.map((photo) => {
+                            return Storage.get(photo);
+                        })
+                    );
+                    originalPhoto = [...photo];
+                }
+                if (attachment) {
+                    attachmentURLs = await Promise.all(
                         attachment.map((attachment) => {
                             return Storage.get(attachment);
                         })
                     );
-                    originalURLs = [...attachment];
+                    originalAttachment = attachment.map((attachment, index) => ({
+                        name: attachment, 
+                        url: attachmentURLs[index],
+                    }));
                 }
                 setPreviews(imageURLs);
-                setOriginalAttachments(originalURLs);
-                setCurrentAttachments(originalURLs);
+                setOriginalAttachments(originalAttachment);
+                setCurrentAttachments(originalAttachment);
+                setOriginalPhotos(originalPhoto);
+                setCurrentPhotos(originalPhoto);
                 setSpecifications(specifications);
                 setFieldValues({
                     ...fields,
@@ -74,7 +91,7 @@ export default function EditItem() {
         );
     }
 
-    function handleFileChange(event) {
+    function handlePhotoChange(event) {
         const newFiles: Array<Blob> = Array.from(event.target.files);
         const invalidFiles: Array<Blob> = newFiles.filter(
             (file) => file.size > config.MAX_ATTACHMENT_SIZE
@@ -87,21 +104,41 @@ export default function EditItem() {
             );
             return;
         }
-        const combinedAttachments = [...currentAttachments, ...newFiles];
-        setCurrentAttachments(combinedAttachments);
+        const combinedPhotos = [...currentPhotos, ...newFiles];
+        setCurrentPhotos(combinedPhotos);
 
         const combinedPreviews = [
             ...previews,
             ...newFiles.map((file: Blob) => URL.createObjectURL(file)),
         ];
 
-        file.current = combinedAttachments;
+        file.current = combinedPhotos;
         setPreviews(combinedPreviews);
     }
 
+    function handleAttachmentChange(event) {
+        const newFiles: Array<Blob> = Array.from(event.target.files);
+        const invalidFiles: Array<Blob> = newFiles.filter(
+            (file) => file.size > config.MAX_ATTACHMENT_SIZE
+        );
+        if (invalidFiles.length > 0) {
+            alert(
+                `One or more of the selected files are larger than ${config.MAX_ATTACHMENT_SIZE / 1000000
+                } MB.`
+            );
+            return;
+        }
+        const combinedAttachments = [...currentAttachments, ...newFiles];
+        setCurrentAttachments(combinedAttachments);
+    }
+
     function removeAttachment(index) {
-        setCurrentAttachments(
-            currentAttachments.filter((_, i) => i !== index)
+        setCurrentAttachments(currentAttachments.filter((_, i: number): boolean => i !== index));
+    }
+
+    function removePhoto(index) {
+        setCurrentPhotos(
+            currentPhotos.filter((_, i) => i !== index)
         );
         setPreviews(previews.filter((_, i) => i !== index));
     }
@@ -128,12 +165,44 @@ export default function EditItem() {
         setSpecifications(newSpecifications);
     }
 
+    function createURL(file) {
+        let returnURL: string;
+        if (file instanceof File) {
+            returnURL = URL.createObjectURL(new Blob([file]));
+        } else {
+            returnURL = file.url;
+        };
+        return returnURL;
+    }
+
 
     async function handleSubmit(event) {
         event.preventDefault();
 
         setIsLoading(true);
         try {
+            const toUploadPhotos = currentPhotos.filter(
+                (photo) => !originalPhotos.includes(photo)
+            );
+            const toRemovePhotos = originalPhotos.filter(
+                (photo) => !currentPhotos.includes(photo)
+            );
+
+            const uploadedPhotos = await Promise.all(
+                toUploadPhotos.map((photo) => s3Upload(photo))
+            );
+
+            await Promise.all(toRemovePhotos.map((photo) => {
+                return Storage.remove(photo);
+            }));
+
+            const updatedPhotos = [
+                ...originalPhotos.filter((photo) =>
+                    currentPhotos.includes(photo)
+                ),
+                ...uploadedPhotos,
+            ];
+
             const toUpload = currentAttachments.filter(
                 (attachment) => !originalAttachments.includes(attachment)
             );
@@ -155,9 +224,9 @@ export default function EditItem() {
                     currentAttachments.includes(attachment)
                 ),
                 ...uploadedAttachments,
-            ];
+            ].map((attachment) => attachment.name);
 
-            const payload = { ...fields, attachment: updatedAttachments, specifications };
+            const payload = { ...fields, photo: updatedPhotos, attachment: updatedAttachments, specifications };
             await updateItem(payload);
             navigate("/");
         } catch (e) {
@@ -239,7 +308,7 @@ export default function EditItem() {
                                     />
                                 </td>
                                 <td>
-                                    <button type={"button"} onClick={() => removeSpecification(index)}>x</button>
+                                    <button className="x-button" type={"button"} onClick={() => removeSpecification(index)}>x</button>
                                 </td>
                             </tr>
                         ))}
@@ -250,16 +319,16 @@ export default function EditItem() {
                     </button>
                 </div>
                 <div className="form-group">
-                    <label>Attachments</label>
-                    <div className="attachment-container">
-                        <label className="attachment-label" htmlFor="attachment-input">
-                            <div className="attachment-placeholder">+</div>
+                    <label>Photos</label>
+                    <div className="photo-container">
+                        <label className="photo-label" htmlFor="photo-input">
+                            <div className="photo-placeholder">+</div>
                         </label>
                         <input
-                            id="attachment-input"
-                            className="attachment-input"
+                            id="photo-input"
+                            className="photo-input"
                             type="file"
-                            onChange={handleFileChange}
+                            onChange={handlePhotoChange}
                             multiple
                             hidden
                         />
@@ -269,12 +338,12 @@ export default function EditItem() {
                                     <img
                                         className="preview"
                                         src={preview}
-                                        alt={`Attachment ${index + 1}`}
+                                        alt={`Photos ${index + 1}`}
                                     />
                                     <button
                                         type="button"
-                                        className="remove-attachment"
-                                        onClick={() => removeAttachment(index)}
+                                        className="remove-photo"
+                                        onClick={() => removePhoto(index)}
                                     >
                                         Remove
                                     </button>
@@ -282,6 +351,37 @@ export default function EditItem() {
                             ))}
                         </div>
                     </div>
+                </div>
+                <div className="form-group">
+                    <label>Attachments</label>
+                    <label className="attachment-label" htmlFor="attachment-input">
+                            <div className="attachment-placeholder">Add Attachment</div>
+                        </label>
+                    <input
+                        id="attachment-input"
+                        className="attachment-input"
+                        type="file"
+                        onChange={handleAttachmentChange}
+                        multiple
+                    />
+                    <ul>
+                        {currentAttachments.map((attachment, index) => (
+                            <li key={index}>
+                                <a href={createURL(attachment)} download target="_blank" rel="noreferrer">
+                                    {attachment.name}
+                                </a>
+                                <button
+                                    type="button"
+                                    className="x-button"
+                                    onClick={() => removeAttachment(index)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                    </svg>
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
                 <button
                     className="btn btn-primary btn-lg"

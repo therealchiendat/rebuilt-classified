@@ -14,6 +14,7 @@ export default function Item() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [price, setPrice] = useState("")
+    const [attachment, setAttachment] = useState([]);
     const [specifications, setSpecifications] = useState<itemSpecification[]>();
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -25,13 +26,16 @@ export default function Item() {
         async function onLoad() {
             try {
                 const item = await fetchItem();
-                const { title, content, price, attachment, specifications } = item;
-                if (attachment) {
+                const { title, content, price, attachment, photo, specifications } = item;
+                if (photo) {
                     let imageURLs = [];
-                    imageURLs = await Promise.all(attachment.map((attachment) => {
-                        return Storage.get(attachment)
+                    imageURLs = await Promise.all(photo.map((p) => {
+                        return Storage.get(p)
                     }));
                     item.image = imageURLs;
+                }
+                if (attachment) {
+                    await fetchAttachments(attachment);
                 }
                 setContent(content);
                 setTitle(title);
@@ -46,12 +50,26 @@ export default function Item() {
         onLoad();
     }, [id]);
 
+    async function fetchAttachments(attachments) {
+        try {
+            const attachmentURLs = await Promise.all(
+                attachments.map((attachment) => Storage.get(attachment))
+            );
+            setAttachment(attachments.map((attachment, index) => ({
+                name: attachment,
+                url: attachmentURLs[index],
+            })));
+        } catch (e) {
+            onError(e);
+        }
+    }
+
     async function deleteItem() {
         try {
             const item = await API.get("item", `item/${id}`, {});
-            if (item.attachment && item.attachment.length > 0) {
-                const deletePromises = item.attachment.map(async (attachment) => {
-                    return Storage.remove(attachment);
+            if (item.photo && item.photo.length > 0) {
+                const deletePromises = item.photo.map(async (photo) => {
+                    return Storage.remove(photo);
                 });
                 await Promise.all(deletePromises);
             }
@@ -84,29 +102,46 @@ export default function Item() {
 
     return (
         <div className="Item">
-            <div className="image-container">
-                {!isLoading && <Carousel images={item.image}/>}
-            </div>
             <h2>{title}</h2>
-            <div className={"description"}>{content}</div>
-            <div className="table-container">
-                <label>Specifications</label>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Key</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {specifications?.map((specification, index) => (
-                        <tr key={index}>
-                            <td>{specification.key}</td>
-                            <td>{specification.value}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+            <div className="item-container">
+                <div className="image-container">
+                    {!isLoading && <Carousel images={item.image}/>}
+                </div>
+                <div className="content-container">
+                    <div className="description-container">
+                        <label>Description:</label>
+                        <div className="description">{content}</div>
+                    </div>
+                    <div className="table-container">
+                        <label>Specifications</label>
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {specifications?.map((specification, index) => (
+                                <tr key={index}>
+                                    <td>{specification.key}</td>
+                                    <td>{specification.value}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="attachment">
+                        <label>Downloadable Documents</label>
+                        {attachment && attachment.map((a, index) => (
+                            <li key={index}>
+                                <a href={a.url} download target="_blank" rel="noreferrer">
+                                    {a.name}
+                                </a>
+                            </li>
+                        ))}
+                    </div>
+                </div>
             </div>
             <p className={"price"}>Price: {price}</p>
 

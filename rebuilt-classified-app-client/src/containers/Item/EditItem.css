@@ -44,24 +44,29 @@
     vertical-align: top;
 }
 
-.EditItem .attachment-input {
+.EditItem .specifications td:last-child {
+    vertical-align: inherit;
+    width: 50px;
+}
+
+.EditItem .photo-input {
     margin-top: 0.5rem;
     display: none;
 }
 
-.EditItem .attachment-container {
+.EditItem .photo-container {
     display: flex;
     flex-direction: row;
 }
 
-.EditItem .attachment-label {
+.EditItem .photo-label {
     display: inline-block;
     cursor: pointer;
     position: relative;
     margin: 0 20px 0 0;
 }
 
-.EditItem .attachment-placeholder {
+.EditItem .photo-placeholder {
     width: 100px;
     height: 100px;
     display: flex;
@@ -93,6 +98,20 @@
     cursor: not-allowed;
 }
 
+.EditItem .x-button {
+    width: 50px;
+    padding: 0.25rem;
+    color: #fb8787;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.EditItem .x-button:hover {
+    color: red;
+    background-color: transparent;
+}
+
 .EditItem .preview-container {
     display: flex;
     flex-wrap: wrap;
@@ -113,7 +132,7 @@
     border-radius: 0.25rem;
 }
 
-.EditItem .remove-attachment {
+.EditItem .remove-photo {
     margin-top: 0.5rem;
     padding: 0.25rem;
     background-color: #dc3545;
@@ -125,6 +144,61 @@
     transition: background-color 0.3s;
 }
 
-.EditItem .remove-attachment:hover {
+.EditItem .remove-photo:hover {
     background-color: #c82333;
 }
+
+.EditItem .remove-photo:hover {
+    background-color: #c82333;
+}
+
+.EditItem .attachment-input {
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.EditItem .attachment-label {
+    width: 100%;
+    border: 2px dashed #ccc;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    margin: 0 20px 0 0;
+    display: flex;
+    justify-content: center;
+}
+
+.EditItem ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.EditItem li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.EditItem li a {
+    flex-grow: 9;
+}
+
+.EditItem .remove-attachment {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.EditItem .remove-attachment:hover {
+    color: #c82333;
+}
+
+.EditItem .remove-attachment svg {
+    fill: #dc3545;
+    width: 1rem;
+    height: 1rem;
+}
+
+

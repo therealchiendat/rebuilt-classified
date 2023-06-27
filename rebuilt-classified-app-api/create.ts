@@ -26,6 +26,7 @@ export async function main(event, context, callback) {
 			 specifications: data.specifications,
 			 price: data.price,
 			 attachment: data.attachment,
+			 photo: data.photo,
 			 createdAt: Date.now()
 		 }
 	};

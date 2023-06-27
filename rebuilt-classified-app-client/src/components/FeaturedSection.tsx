@@ -4,7 +4,6 @@ export default function FeaturedSection({ data, title }: { data: any, title: str
     const navigate = useNavigate();
 
     function handleItemClick(id: string) {
-        console.log(id);
         navigate('/definitelynotmerch/' + id);
     }
 

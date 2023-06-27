@@ -36,7 +36,7 @@ provider:
 
 functions:
          # Defines an HTTP API endpoint that calls the main function in create.ts
-         # - path: url path is /rebuiltClassified
+         # - path: url path is /item
          # - method: POST request
          # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
          # domain api call
@@ -52,13 +52,35 @@ functions:
 
          get:
             # Defines an HTTP API endpoint that calls the main function in get.ts
-            # - path: url path is /rebuiltClassified/{id}
+            # - path: url path is /item/{id}
             # - method: GET request
             handler: get.main
             events:
               - http:
                     path: item/{id}
                     method: get
+          
+         get-page-info:
+            # Defines an HTTP API endpoint that calls the main function in list.ts
+            # - path: url path is /info
+            # - method: GET request
+            handler: get-page-info.main
+            events:
+              - http:
+                    path: info
+                    method: get
+        
+         update-page-info:
+            # Defines an HTTP API endpoint that calls the main function in update.ts
+            # - path: url path is /info/{id}
+            # - method: PUT request
+            handler: update-page-info.main
+            events:
+              - http:
+                    path: /info/{id}
+                    method: put
+                    cors: true
+                    authorizer: aws_iam
 
          list:
             # Defines an HTTP API endpoint that calls the main function in list.ts
