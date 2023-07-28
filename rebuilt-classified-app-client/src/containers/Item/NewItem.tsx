@@ -21,7 +21,17 @@ export default function NewItem() {
     const [photos, setPhotos] = useState([]);
     const [attachments, setAttachments] = useState([]);
     const [previews, setPreviews] = useState([]);
-    const [specifications, setSpecifications] = useState<itemSpecification[]>([]);
+    const [specifications, setSpecifications] = useState<itemSpecification[]>([
+        { key: "MOTORS", value: "" },
+        { key: "HP", value: "" },
+        { key: "VOLTS", value: "" },
+        { key: "RPM", value: "" },
+        { key: "FL AMPS", value: "" },
+        { key: "FRAME", value: "" },
+        { key: "HZ", value: "" },
+        { key: "PH", value: "" },
+        { key: "MANUFACTURER", value: "" },
+    ]);
 
     function validateForm() {
         return fields.title.length > 0 &&
@@ -239,8 +249,8 @@ export default function NewItem() {
                 <div className="form-group">
                     <label>Attachments</label>
                     <label className="attachment-label" htmlFor="attachment-input">
-                            <div className="attachment-placeholder">Add Attachment</div>
-                        </label>
+                        <div className="attachment-placeholder">Add Attachment</div>
+                    </label>
                     <input
                         id="attachment-input"
                         className="attachment-input"
