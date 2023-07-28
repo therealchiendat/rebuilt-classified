@@ -51,7 +51,7 @@ export const Navbar = ({ transparent, position }: { transparent: boolean, positi
             </svg>}
             </div>
             <div className="section pointer" onClick={() => handleNavClick('')}>
-                <img className="logo" src={logo} height="50" width="50" alt="Nguyen Technologies & Electrical Equipment" />
+                <img className="logo" src={logo} height="50" alt="Nguyen Technologies & Electrical Equipment" />
             </div>
             <div className="section float-right">
                 {!isAuthenticated ?
